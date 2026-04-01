@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Common;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
@@ -28,10 +29,9 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'message'  => 'Registration successful',
-            'user'     => $user,
-            'token'    => $token,
+        return Common::successResponse('Registration successful', [
+            'user'  => $user,
+            'token' => $token,
         ], 201);
     }
 
@@ -52,10 +52,9 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'Login successful',
-            'user'    => $user,
-            'token'   => $token,
+        return Common::successResponse('Login successful', [
+            'user'  => $user,
+            'token' => $token,
         ]);
     }
 
@@ -66,9 +65,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json([
-            'message' => 'Logged out successfully',
-        ]);
+        return Common::successResponse('Logged out successfully', []);
     }
 
     /**
@@ -76,7 +73,7 @@ class AuthController extends Controller
      */
     public function me(Request $request): JsonResponse
     {
-        return response()->json([
+        return Common::successResponse('User retrieved successfully', [
             'user' => $request->user(),
         ]);
     }
@@ -87,13 +84,13 @@ class AuthController extends Controller
     protected function resolveRole(Request $request): string
     {
         if ($request->routeIs('teacher.*')) {
-            return 'teacher';
+            return Common::TEACHER;
         }
 
         if ($request->routeIs('student.*')) {
-            return 'student';
+            return Common::STUDENT;
         }
 
-        return 'student';
+        return Common::STUDENT;
     }
 }

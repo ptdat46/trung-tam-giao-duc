@@ -23,14 +23,18 @@
   Response 200:
   {
     "message": "Login successful",
-    "user": {
-      "id":    1,
-      "name":  "Admin",
-      "email": "admin@admin.com",
-      "role":  "admin",
-      ...
+    "data": {
+      "user": {
+        "id":    1,
+        "name":  "Admin",
+        "email": "admin@admin.com",
+        "role":  "admin",
+        "created_at": "2026-04-02T...",
+        "updated_at": "2026-04-02T..."
+      },
+      "token": "1|abcdefghijk..."      // Sanctum plain token
     },
-    "token": "1|abcdefghijk..."  // Sanctum plain token
+    "status": 200
   }
 
   Response 422 (Validation Error):
@@ -39,7 +43,8 @@
     "errors": {
       "email":    ["The email field is required."],
       "password": ["The password field is required."]
-    }
+    },
+    "status": 422
   }
 
   Response 401 (Wrong Credentials):
@@ -47,7 +52,8 @@
     "message": "The given data was invalid.",
     "errors": {
       "email": ["The provided credentials are incorrect."]
-    }
+    },
+    "status": 422
   }
 
   ─────────────────────────────────────────────────────────────
@@ -61,17 +67,21 @@
 
   Response 200:
   {
-    "message": "Logged out successfully"
+    "message": "Logged out successfully",
+    "data":  [],
+    "status": 200
   }
 
   Response 401 (Chưa đăng nhập):
   {
-    "message": "Unauthenticated."
+    "message": "Unauthenticated.",
+    "status": 401
   }
 
   Response 403 (Sai role):
   {
-    "message": "Unauthorized. You do not have permission to access this resource."
+    "message": "Unauthorized. You do not have permission to access this resource.",
+    "status": 403
   }
 
   ─────────────────────────────────────────────────────────────
@@ -85,24 +95,30 @@
 
   Response 200:
   {
-    "user": {
-      "id":    1,
-      "name":  "Admin",
-      "email": "admin@admin.com",
-      "role":  "admin",
-      "created_at": "2026-04-02T...",
-      "updated_at": "2026-04-02T..."
-    }
+    "message": "User retrieved successfully",
+    "data": {
+      "user": {
+        "id":    1,
+        "name":  "Admin",
+        "email": "admin@admin.com",
+        "role":  "admin",
+        "created_at": "2026-04-02T...",
+        "updated_at": "2026-04-02T..."
+      }
+    },
+    "status": 200
   }
 
   Response 401 (Chưa đăng nhập):
   {
-    "message": "Unauthenticated."
+    "message": "Unauthenticated.",
+    "status": 401
   }
 
   Response 403 (Sai role):
   {
-    "message": "Unauthorized. You do not have permission to access this resource."
+    "message": "Unauthorized. You do not have permission to access this resource.",
+    "status": 403
   }
 
 
@@ -118,23 +134,27 @@
 
   Request Body (JSON):
   {
-    "name":                 "Nguyễn Văn A",   // required, string, max:255
+    "name":                 "Nguyễn Văn A",       // required, string, max:255
     "email":                "teacher@example.com", // required, email, unique
-    "password":             "123456",         // required, min:6
-    "password_confirmation": "123456"         // required, phải trùng password
+    "password":             "123456",             // required, min:6
+    "password_confirmation": "123456"              // required, phải trùng password
   }
 
   Response 201:
   {
     "message": "Registration successful",
-    "user": {
-      "id":    2,
-      "name":  "Nguyễn Văn A",
-      "email": "teacher@example.com",
-      "role":  "teacher",
-      ...
+    "data": {
+      "user": {
+        "id":    2,
+        "name":  "Nguyễn Văn A",
+        "email": "teacher@example.com",
+        "role":  "teacher",
+        "created_at": "2026-04-02T...",
+        "updated_at": "2026-04-02T..."
+      },
+      "token": "2|abcdefghijk..."
     },
-    "token": "2|abcdefghijk..."
+    "status": 201
   }
 
   Response 422 (Validation Error):
@@ -144,7 +164,8 @@
       "name":     ["The name field is required."],
       "email":    ["The email has already been taken."],
       "password": ["The password confirmation does not match."]
-    }
+    },
+    "status": 422
   }
 
   ─────────────────────────────────────────────────────────────
@@ -156,20 +177,23 @@
   Request Body (JSON):
   {
     "email":    "teacher@example.com",  // required, email
-    "password": "123456"               // required, string
+    "password": "123456"                // required, string
   }
 
   Response 200:
   {
     "message": "Login successful",
-    "user": {
-      "id":    2,
-      "name":  "Nguyễn Văn A",
-      "email": "teacher@example.com",
-      "role":  "teacher",
-      ...
+    "data": {
+      "user": {
+        "id":    2,
+        "name":  "Nguyễn Văn A",
+        "email": "teacher@example.com",
+        "role":  "teacher",
+        ...
+      },
+      "token": "2|abcdefghijk..."
     },
-    "token": "2|abcdefghijk..."
+    "status": 200
   }
 
   Response 401 (Wrong Credentials):
@@ -177,7 +201,8 @@
     "message": "The given data was invalid.",
     "errors": {
       "email": ["The provided credentials are incorrect."]
-    }
+    },
+    "status": 422
   }
 
   ─────────────────────────────────────────────────────────────
@@ -191,7 +216,9 @@
 
   Response 200:
   {
-    "message": "Logged out successfully"
+    "message": "Logged out successfully",
+    "data":  [],
+    "status": 200
   }
 
   ─────────────────────────────────────────────────────────────
@@ -205,13 +232,17 @@
 
   Response 200:
   {
-    "user": {
-      "id":    2,
-      "name":  "Nguyễn Văn A",
-      "email": "teacher@example.com",
-      "role":  "teacher",
-      ...
-    }
+    "message": "User retrieved successfully",
+    "data": {
+      "user": {
+        "id":    2,
+        "name":  "Nguyễn Văn A",
+        "email": "teacher@example.com",
+        "role":  "teacher",
+        ...
+      }
+    },
+    "status": 200
   }
 
 
@@ -227,23 +258,27 @@
 
   Request Body (JSON):
   {
-    "name":                 "Trần Thị B",      // required, string, max:255
-    "email":                "student@example.com", // required, email, unique
-    "password":             "123456",          // required, min:6
-    "password_confirmation": "123456"           // required, phải trùng password
+    "name":                 "Trần Thị B",           // required, string, max:255
+    "email":                "student@example.com",  // required, email, unique
+    "password":             "123456",              // required, min:6
+    "password_confirmation": "123456"                // required, phải trùng password
   }
 
   Response 201:
   {
     "message": "Registration successful",
-    "user": {
-      "id":    3,
-      "name":  "Trần Thị B",
-      "email": "student@example.com",
-      "role":  "student",
-      ...
+    "data": {
+      "user": {
+        "id":    3,
+        "name":  "Trần Thị B",
+        "email": "student@example.com",
+        "role":  "student",
+        "created_at": "2026-04-02T...",
+        "updated_at": "2026-04-02T..."
+      },
+      "token": "3|abcdefghijk..."
     },
-    "token": "3|abcdefghijk..."
+    "status": 201
   }
 
   ─────────────────────────────────────────────────────────────
@@ -255,20 +290,23 @@
   Request Body (JSON):
   {
     "email":    "student@example.com",  // required, email
-    "password": "123456"               // required, string
+    "password": "123456"                // required, string
   }
 
   Response 200:
   {
     "message": "Login successful",
-    "user": {
-      "id":    3,
-      "name":  "Trần Thị B",
-      "email": "student@example.com",
-      "role":  "student",
-      ...
+    "data": {
+      "user": {
+        "id":    3,
+        "name":  "Trần Thị B",
+        "email": "student@example.com",
+        "role":  "student",
+        ...
+      },
+      "token": "3|abcdefghijk..."
     },
-    "token": "3|abcdefghijk..."
+    "status": 200
   }
 
   ─────────────────────────────────────────────────────────────
@@ -282,7 +320,9 @@
 
   Response 200:
   {
-    "message": "Logged out successfully"
+    "message": "Logged out successfully",
+    "data":  [],
+    "status": 200
   }
 
   ─────────────────────────────────────────────────────────────
@@ -296,13 +336,17 @@
 
   Response 200:
   {
-    "user": {
-      "id":    3,
-      "name":  "Trần Thị B",
-      "email": "student@example.com",
-      "role":  "student",
-      ...
-    }
+    "message": "User retrieved successfully",
+    "data": {
+      "user": {
+        "id":    3,
+        "name":  "Trần Thị B",
+        "email": "student@example.com",
+        "role":  "student",
+        ...
+      }
+    },
+    "status": 200
   }
 
 
@@ -331,7 +375,28 @@
 
 
 ================================================================================
-  5. HTTP STATUS CODES
+  5. RESPONSE FORMAT — CHUẨN
+================================================================================
+
+  Tất cả API success trả theo format:
+
+  {
+    "message": "Mô tả thành công",
+    "data":    { ... },
+    "status":  200
+  }
+
+  Tất cả API error trả theo format:
+
+  {
+    "message": "Mô tả lỗi",
+    "errors":  { ... },     // optional, chỉ có khi có lỗi validate
+    "status":  4xx/5xx
+  }
+
+
+================================================================================
+  6. HTTP STATUS CODES
 ================================================================================
 
   200  — OK, thành công
@@ -342,27 +407,29 @@
 
 
 ================================================================================
-  6. CÁCH SỬ DỤNG TOKEN
+  7. CÁCH SỬ DỤNG TOKEN
 ================================================================================
 
-  Sau khi login/register thành công, FE sẽ nhận được response chứa
-  field "token":
+  Sau khi login/register thành công, FE sẽ nhận được response:
 
   {
     "message": "Login successful",
-    "user": { ... },
-    "token": "2|abcdefghijk..."
+    "data": {
+      "user":  { ... },
+      "token": "2|abcdefghijk..."
+    },
+    "status": 200
   }
 
   FE cần lưu token này (localStorage / sessionStorage / cookie),
-  sau đó gửi kèm trong mọi request bảo vệ (protected routes):
+  sau đó gửi kèm trong mọi request bảo vệ:
 
   Headers:
   Authorization: Bearer 2|abcdefghijk...
 
 
 ================================================================================
-  7. TÀI KHOẢN TEST
+  8. TÀI KHOẢN TEST
 ================================================================================
 
   Admin:
@@ -374,15 +441,18 @@
 
 
 ================================================================================
-  8. LƯU Ý CHO FE DEV
+  9. LƯU Ý CHO FE DEV
 ================================================================================
 
   - Tất cả API trả về Content-Type: application/json
-  - Validation lỗi trả về HTTP 422 với cấu trúc:
-    { "message": "...", "errors": { "field": ["lỗi 1", "lỗi 2"] } }
+  - Response luôn có 3 field: message, data, status
+  - Field "errors" chỉ xuất hiện khi có lỗi validate (HTTP 422)
+  - Validation lỗi trả về HTTP 422:
+    { "message": "...", "errors": { "field": ["lỗi 1"] }, "status": 422 }
   - Auth lỗi trả về HTTP 401:
-    { "message": "Unauthenticated." }
+    { "message": "Unauthenticated.", "status": 401 }
   - Role sai trả về HTTP 403:
-    { "message": "Unauthorized. You do not have permission to access this resource." }
-  - Token có dạng "<id>|<random_string>", token bị xóa khi logout
+    { "message": "Unauthorized. You do not have permission to access this resource.", "status": 403 }
+  - Token có dạng "<id>|<random_string>", bị xóa khi logout
   - Admin KHÔNG có register (chỉ có 1 tài khoản admin cố định)
+  - Gửi header "Accept: application/json" để nhận JSON thay vì redirect
