@@ -1,4 +1,0 @@
-- composer install để download các thư viện
-- cp .env.example .env 
-- php artisan migrate
-- php artisan install:api: để sử dụng api.php

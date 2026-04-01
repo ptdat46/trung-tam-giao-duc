@@ -1,0 +1,388 @@
+================================================================================
+  AUTH API DOCUMENTATION
+  Base URL: http://localhost:8000/api
+  Auth Method: Bearer Token (Sanctum)
+================================================================================
+
+================================================================================
+  1. ADMIN AUTH
+================================================================================
+
+  ─────────────────────────────────────────────────────────────
+  [POST] /api/admin/login
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Đăng nhập tài khoản admin
+  Auth     : Không cần
+
+  Request Body (JSON):
+  {
+    "email":    "admin@admin.com",   // required, email
+    "password": "password"            // required, string
+  }
+
+  Response 200:
+  {
+    "message": "Login successful",
+    "user": {
+      "id":    1,
+      "name":  "Admin",
+      "email": "admin@admin.com",
+      "role":  "admin",
+      ...
+    },
+    "token": "1|abcdefghijk..."  // Sanctum plain token
+  }
+
+  Response 422 (Validation Error):
+  {
+    "message": "The given data was invalid.",
+    "errors": {
+      "email":    ["The email field is required."],
+      "password": ["The password field is required."]
+    }
+  }
+
+  Response 401 (Wrong Credentials):
+  {
+    "message": "The given data was invalid.",
+    "errors": {
+      "email": ["The provided credentials are incorrect."]
+    }
+  }
+
+  ─────────────────────────────────────────────────────────────
+  [POST] /api/admin/logout
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Đăng xuất, thu hồi token hiện tại
+  Auth     : Cần — Bearer Token + role = admin
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "message": "Logged out successfully"
+  }
+
+  Response 401 (Chưa đăng nhập):
+  {
+    "message": "Unauthenticated."
+  }
+
+  Response 403 (Sai role):
+  {
+    "message": "Unauthorized. You do not have permission to access this resource."
+  }
+
+  ─────────────────────────────────────────────────────────────
+  [GET] /api/admin/me
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Lấy thông tin admin đang đăng nhập
+  Auth     : Cần — Bearer Token + role = admin
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "user": {
+      "id":    1,
+      "name":  "Admin",
+      "email": "admin@admin.com",
+      "role":  "admin",
+      "created_at": "2026-04-02T...",
+      "updated_at": "2026-04-02T..."
+    }
+  }
+
+  Response 401 (Chưa đăng nhập):
+  {
+    "message": "Unauthenticated."
+  }
+
+  Response 403 (Sai role):
+  {
+    "message": "Unauthorized. You do not have permission to access this resource."
+  }
+
+
+================================================================================
+  2. TEACHER AUTH
+================================================================================
+
+  ─────────────────────────────────────────────────────────────
+  [POST] /api/teacher/register
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Đăng ký tài khoản giáo viên
+  Auth     : Không cần
+
+  Request Body (JSON):
+  {
+    "name":                 "Nguyễn Văn A",   // required, string, max:255
+    "email":                "teacher@example.com", // required, email, unique
+    "password":             "123456",         // required, min:6
+    "password_confirmation": "123456"         // required, phải trùng password
+  }
+
+  Response 201:
+  {
+    "message": "Registration successful",
+    "user": {
+      "id":    2,
+      "name":  "Nguyễn Văn A",
+      "email": "teacher@example.com",
+      "role":  "teacher",
+      ...
+    },
+    "token": "2|abcdefghijk..."
+  }
+
+  Response 422 (Validation Error):
+  {
+    "message": "The given data was invalid.",
+    "errors": {
+      "name":     ["The name field is required."],
+      "email":    ["The email has already been taken."],
+      "password": ["The password confirmation does not match."]
+    }
+  }
+
+  ─────────────────────────────────────────────────────────────
+  [POST] /api/teacher/login
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Đăng nhập tài khoản giáo viên
+  Auth     : Không cần
+
+  Request Body (JSON):
+  {
+    "email":    "teacher@example.com",  // required, email
+    "password": "123456"               // required, string
+  }
+
+  Response 200:
+  {
+    "message": "Login successful",
+    "user": {
+      "id":    2,
+      "name":  "Nguyễn Văn A",
+      "email": "teacher@example.com",
+      "role":  "teacher",
+      ...
+    },
+    "token": "2|abcdefghijk..."
+  }
+
+  Response 401 (Wrong Credentials):
+  {
+    "message": "The given data was invalid.",
+    "errors": {
+      "email": ["The provided credentials are incorrect."]
+    }
+  }
+
+  ─────────────────────────────────────────────────────────────
+  [POST] /api/teacher/logout
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Đăng xuất, thu hồi token hiện tại
+  Auth     : Cần — Bearer Token + role = teacher
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "message": "Logged out successfully"
+  }
+
+  ─────────────────────────────────────────────────────────────
+  [GET] /api/teacher/me
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Lấy thông tin giáo viên đang đăng nhập
+  Auth     : Cần — Bearer Token + role = teacher
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "user": {
+      "id":    2,
+      "name":  "Nguyễn Văn A",
+      "email": "teacher@example.com",
+      "role":  "teacher",
+      ...
+    }
+  }
+
+
+================================================================================
+  3. STUDENT AUTH
+================================================================================
+
+  ─────────────────────────────────────────────────────────────
+  [POST] /api/student/register
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Đăng ký tài khoản học sinh
+  Auth     : Không cần
+
+  Request Body (JSON):
+  {
+    "name":                 "Trần Thị B",      // required, string, max:255
+    "email":                "student@example.com", // required, email, unique
+    "password":             "123456",          // required, min:6
+    "password_confirmation": "123456"           // required, phải trùng password
+  }
+
+  Response 201:
+  {
+    "message": "Registration successful",
+    "user": {
+      "id":    3,
+      "name":  "Trần Thị B",
+      "email": "student@example.com",
+      "role":  "student",
+      ...
+    },
+    "token": "3|abcdefghijk..."
+  }
+
+  ─────────────────────────────────────────────────────────────
+  [POST] /api/student/login
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Đăng nhập tài khoản học sinh
+  Auth     : Không cần
+
+  Request Body (JSON):
+  {
+    "email":    "student@example.com",  // required, email
+    "password": "123456"               // required, string
+  }
+
+  Response 200:
+  {
+    "message": "Login successful",
+    "user": {
+      "id":    3,
+      "name":  "Trần Thị B",
+      "email": "student@example.com",
+      "role":  "student",
+      ...
+    },
+    "token": "3|abcdefghijk..."
+  }
+
+  ─────────────────────────────────────────────────────────────
+  [POST] /api/student/logout
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Đăng xuất, thu hồi token hiện tại
+  Auth     : Cần — Bearer Token + role = student
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "message": "Logged out successfully"
+  }
+
+  ─────────────────────────────────────────────────────────────
+  [GET] /api/student/me
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Lấy thông tin học sinh đang đăng nhập
+  Auth     : Cần — Bearer Token + role = student
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "user": {
+      "id":    3,
+      "name":  "Trần Thị B",
+      "email": "student@example.com",
+      "role":  "student",
+      ...
+    }
+  }
+
+
+================================================================================
+  4. DEFAULT SANCTUM ROUTE
+================================================================================
+
+  ─────────────────────────────────────────────────────────────
+  [GET] /api/user
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Lấy thông tin user của token hiện tại (dùng được
+             với mọi role — không kiểm tra role)
+  Auth     : Cần — Bearer Token
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "id":    1,
+    "name":  "Admin",
+    "email": "admin@admin.com",
+    "role":  "admin",
+    ...
+  }
+
+
+================================================================================
+  5. HTTP STATUS CODES
+================================================================================
+
+  200  — OK, thành công
+  201  — Created, tạo mới thành công (register)
+  401  — Unauthenticated, chưa đăng nhập / token sai
+  403  — Forbidden, không có quyền (sai role)
+  422  — Validation Error, dữ liệu gửi lên không hợp lệ
+
+
+================================================================================
+  6. CÁCH SỬ DỤNG TOKEN
+================================================================================
+
+  Sau khi login/register thành công, FE sẽ nhận được response chứa
+  field "token":
+
+  {
+    "message": "Login successful",
+    "user": { ... },
+    "token": "2|abcdefghijk..."
+  }
+
+  FE cần lưu token này (localStorage / sessionStorage / cookie),
+  sau đó gửi kèm trong mọi request bảo vệ (protected routes):
+
+  Headers:
+  Authorization: Bearer 2|abcdefghijk...
+
+
+================================================================================
+  7. TÀI KHOẢN TEST
+================================================================================
+
+  Admin:
+    Email    : admin@admin.com
+    Password : password
+
+  Teacher / Student:
+    Tự đăng ký qua /api/teacher/register hoặc /api/student/register
+
+
+================================================================================
+  8. LƯU Ý CHO FE DEV
+================================================================================
+
+  - Tất cả API trả về Content-Type: application/json
+  - Validation lỗi trả về HTTP 422 với cấu trúc:
+    { "message": "...", "errors": { "field": ["lỗi 1", "lỗi 2"] } }
+  - Auth lỗi trả về HTTP 401:
+    { "message": "Unauthenticated." }
+  - Role sai trả về HTTP 403:
+    { "message": "Unauthorized. You do not have permission to access this resource." }
+  - Token có dạng "<id>|<random_string>", token bị xóa khi logout
+  - Admin KHÔNG có register (chỉ có 1 tài khoản admin cố định)
