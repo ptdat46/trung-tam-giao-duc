@@ -462,6 +462,7 @@
       "total_users":            1284,       // Tổng số user
       "user_growth_percent":    12,         // % tăng trưởng user so tháng trước
       "total_classes":          56,         // Tổng số lớp
+      "total_courses":          12,         // Tổng số khoá học
       "active_classes_count":   42,         // Số lớp đang ongoing (status=1)
       "monthly_revenue":        1250000000, // Tổng tiền đã thanh toán tháng này
       "revenue_target_percent": 85          // % hoàn thành target doanh thu

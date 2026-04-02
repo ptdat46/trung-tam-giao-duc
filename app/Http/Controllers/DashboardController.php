@@ -7,6 +7,7 @@ use App\Models\ClassModel;
 use App\Models\Enrollment;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Course;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -27,6 +28,8 @@ class DashboardController extends Controller
 
         $totalClasses = ClassModel::count();
 
+        $totalCourses = Course::count();
+
         $activeClassesCount = ClassModel::where('status', 1)->count();
 
         $monthlyRevenue = Transaction::where('status', 1)
@@ -43,6 +46,7 @@ class DashboardController extends Controller
             'total_users'           => $totalUsers,
             'user_growth_percent'   => $userGrowthPercent,
             'total_classes'         => $totalClasses,
+            'total_courses'         => $totalCourses,
             'active_classes_count'  => $activeClassesCount,
             'monthly_revenue'       => (int) $monthlyRevenue,
             'revenue_target_percent' => $revenueTargetPercent,
