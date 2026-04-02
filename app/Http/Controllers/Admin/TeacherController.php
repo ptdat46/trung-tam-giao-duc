@@ -8,6 +8,8 @@ use App\Http\Requests\StoreTeacherRequest;
 use App\Http\Requests\UpdateTeacherRequest;
 use App\Http\Resources\TeacherResource;
 use App\Models\User;
+use App\Repositories\TeacherRepository;
+use App\Services\TeacherService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +17,21 @@ use Illuminate\Support\Facades\Hash;
 
 class TeacherController extends Controller
 {
+    public function __construct(
+        private TeacherService $teacherService
+    ) {}
+
+    public function getClasses(int $id): JsonResponse
+    {
+        $teacher = User::where('role', 'teacher')->findOrFail($id);
+
+        $classes = $this->teacherService->getClassesByTeacherId($id);
+
+        return Common::successResponse('Teacher classes retrieved successfully', [
+            'teacher' => new TeacherResource($teacher),
+            'classes' => $classes,
+        ]);
+    }
     public function index(Request $request): JsonResponse
     {
         $perPage = $request->integer('per_page', 10);

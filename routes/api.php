@@ -26,6 +26,7 @@ Route::prefix('admin')->group(function () {
             'teachers' => 'teacher',
         ]);
         Route::delete('/teachers', [TeacherController::class, 'destroyMany']);
+        Route::get('/teachers/{teacher}/classes', [TeacherController::class, 'getClasses']);
     });
 });
 

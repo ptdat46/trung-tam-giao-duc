@@ -810,6 +810,64 @@
     "status": 422
   }
 
+  ─────────────────────────────────────────────────────────────
+  [GET] /api/admin/teachers/{id}/classes
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Lấy danh sách lớp học của một giáo viên
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "message": "Teacher classes retrieved successfully",
+    "data": {
+      "teacher": {
+        "id":    2,
+        "name":  "Nguyễn Văn A",
+        "email": "teacher@example.com",
+        "phone": "0901234567",
+        "role":  "teacher",
+        "status": 1
+      },
+      "classes": [
+        {
+          "id":             1,
+          "name":           "IELTS Intensive Sáng",
+          "type":           1,
+          "type_label":     "Online",
+          "room_number":    "Phòng A1",
+          "meeting_link":   "https://meet.google.com/abc-defg-hij",
+          "start_date":     "2026-04-01",
+          "end_date":       "2026-06-30",
+          "status":         1,
+          "status_label":   "Đang học",
+          "course": {
+            "id":   1,
+            "name": "IELTS Intensive",
+            "slug": "ielts-intensive"
+          },
+          "total_sessions": 24,
+          "total_students": 18,
+          "created_at":     "2026-04-01T..."
+        },
+        { ... }
+      ]
+    },
+    "status": 200
+  }
+
+  Response 404:
+  {
+    "message": "No query results for model [User] 999.",
+    "status": 404
+  }
+
+  Ghi chú:
+  - type: 0 = Offline, 1 = Online
+  - status: 0 = Sắp mở, 1 = Đang học, 2 = Đã kết thúc, 3 = Đã hủy
+  - total_students: chỉ đếm enrollment có status = 1 (đã ghi danh)
+
 
 ================================================================================
   11. LƯU Ý CHO FE DEV
