@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +15,17 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout');
         Route::get ('/me',      [AuthController::class, 'me'])->name('admin.me');
+
+        // Dashboard APIs
+        Route::get('/dashboard/stats',           [DashboardController::class, 'getStats']);
+        Route::get('/dashboard/charts',           [DashboardController::class, 'getCharts']);
+        Route::get('/dashboard/student-status',   [DashboardController::class, 'getStudentStatus']);
+        Route::get('/dashboard/pending-actions',   [DashboardController::class, 'getPendingActions']);
+
+        Route::apiResource('teachers', TeacherController::class)->parameters([
+            'teachers' => 'teacher',
+        ]);
+        Route::delete('/teachers', [TeacherController::class, 'destroyMany']);
     });
 });
 

@@ -25,7 +25,7 @@ class TeacherSeeder extends Seeder
                     'name' => $teacher['name'],
                     'email' => $teacher['email'],
                     'password' => Hash::make('123123'),
-                    'role' => 1,
+                    'role' => 'teacher',
                 ]
             );
         }

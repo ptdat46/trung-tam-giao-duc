@@ -17,14 +17,14 @@ class StudentSeeder extends Seeder
                 'email' => 'student1@gmail.com',
                 'password' => Hash::make('123123'),
                 'phone' => '0901234567',
-                'role' => 2,
+                'role' => 'student',
                 'status' => 1,
             ]
         );
 
         User::factory()
             ->count(99)
-            ->state(['role' => 2, 'status' => 1])
+            ->state(['role' => 'student', 'status' => 1])
             ->create();
     }
 }
