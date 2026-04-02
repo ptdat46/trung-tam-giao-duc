@@ -137,7 +137,7 @@
     "name":                 "Nguyễn Văn A",       // required, string, max:255
     "email":                "teacher@example.com", // required, email, unique
     "password":             "123456",             // required, min:6
-    "password_confirmation": "123456"              // required, phải trùng password
+    "repassword": "123456"                         // required, phải trùng password
   }
 
   Response 201:
@@ -163,7 +163,7 @@
     "errors": {
       "name":     ["The name field is required."],
       "email":    ["The email has already been taken."],
-      "password": ["The password confirmation does not match."]
+      "repassword": ["The repassword must be same as password."]
     },
     "status": 422
   }
@@ -261,7 +261,7 @@
     "name":                 "Trần Thị B",           // required, string, max:255
     "email":                "student@example.com",  // required, email, unique
     "password":             "123456",              // required, min:6
-    "password_confirmation": "123456"                // required, phải trùng password
+    "repassword": "123456"                         // required, phải trùng password
   }
 
   Response 201:
