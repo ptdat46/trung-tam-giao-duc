@@ -42,7 +42,7 @@ class DashboardController extends Controller
             ? round(($monthlyRevenue / $revenueTarget) * 100)
             : 0;
 
-        return Common::successResponse('Dashboard stats retrieved successfully', [
+        return Common::successResponse('Lấy thống kê dashboard thành công', [
             'total_users'           => $totalUsers,
             'user_growth_percent'   => $userGrowthPercent,
             'total_classes'         => $totalClasses,
@@ -77,7 +77,7 @@ class DashboardController extends Controller
             ];
         }
 
-        return Common::successResponse('Chart data retrieved successfully', $months);
+        return Common::successResponse('Lấy dữ liệu biểu đồ thành công', $months);
     }
 
     public function getStudentStatus(): JsonResponse
@@ -86,7 +86,7 @@ class DashboardController extends Controller
         $enrolled = Enrollment::where('status', 1)->count();
         $canceled = Enrollment::where('status', 0)->count();
 
-        return Common::successResponse('Student status retrieved successfully', [
+        return Common::successResponse('Lấy trạng thái học sinh thành công', [
             'pending'  => $pending,
             'enrolled' => $enrolled,
             'canceled' => $canceled,
@@ -122,6 +122,6 @@ class DashboardController extends Controller
             ];
         });
 
-        return Common::successResponse('Pending actions retrieved successfully', $data);
+        return Common::successResponse('Lấy danh sách chờ xử lý thành công', $data);
     }
 }

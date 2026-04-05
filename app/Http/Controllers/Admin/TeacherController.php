@@ -27,7 +27,7 @@ class TeacherController extends Controller
 
         $classes = $this->teacherService->getClassesByTeacherId($id);
 
-        return Common::successResponse('Teacher classes retrieved successfully', [
+        return Common::successResponse('Lấy danh sách lớp giáo viên thành công', [
             'teacher' => new TeacherResource($teacher),
             'classes' => $classes,
         ]);
@@ -41,7 +41,7 @@ class TeacherController extends Controller
             ->paginate($perPage);
 
         return Common::successResponse(
-            'Teachers retrieved successfully',
+            'Lấy danh sách giáo viên thành công',
             [
                 'data' => TeacherResource::collection($teachers),
                 'meta' => [
@@ -59,7 +59,7 @@ class TeacherController extends Controller
         $teacher = User::where('role', 'teacher')->findOrFail($id);
 
         return Common::successResponse(
-            'Teacher retrieved successfully',
+            'Lấy thông tin giáo viên thành công',
             ['teacher' => new TeacherResource($teacher)]
         );
     }
@@ -85,7 +85,7 @@ class TeacherController extends Controller
         });
 
         return Common::successResponse(
-            'Teachers created successfully',
+            'Tạo giáo viên thành công',
             [
                 'created_count' => count($createdTeachers),
                 'teachers'      => TeacherResource::collection(collect($createdTeachers)),
@@ -106,7 +106,7 @@ class TeacherController extends Controller
         $teacher->update($validated);
 
         return Common::successResponse(
-            'Teacher updated successfully',
+            'Cập nhật giáo viên thành công',
             ['teacher' => new TeacherResource($teacher->fresh())]
         );
     }
@@ -116,7 +116,7 @@ class TeacherController extends Controller
         $teacher = User::where('role', 'teacher')->findOrFail($id);
         $teacher->delete();
 
-        return Common::successResponse('Teacher deleted successfully', []);
+        return Common::successResponse('Xóa giáo viên thành công', []);
     }
 
     public function destroyMany(Request $request): JsonResponse
@@ -130,7 +130,7 @@ class TeacherController extends Controller
             ->whereIn('id', $request->ids)
             ->delete();
 
-        return Common::successResponse('Teachers deleted successfully', [
+        return Common::successResponse('Xóa nhiều giáo viên thành công', [
             'deleted_count' => $deletedCount,
         ]);
     }

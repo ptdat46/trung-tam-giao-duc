@@ -27,7 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (ValidationException $e, Request $request) {
             if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
-                    'message' => 'The given data was invalid.',
+                    'message' => 'Dữ liệu không hợp lệ.',
                     'errors' => $e->errors(),
                 ], 422);
             }
@@ -36,7 +36,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
-                    'message' => 'Unauthenticated.',
+                    'message' => 'Chưa đăng nhập.',
                 ], 401);
             }
         });

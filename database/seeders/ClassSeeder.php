@@ -12,7 +12,7 @@ class ClassSeeder extends Seeder
 {
     public function run(): void
     {
-        $teachers = User::where('role', 1)->get();
+        $teachers = User::where('role', 'teacher')->get();
         $courses = Course::all();
 
         $now = Carbon::now();

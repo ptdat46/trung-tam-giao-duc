@@ -11,6 +11,8 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
         $this->call([
             AdminUserSeeder::class,
             TeacherSeeder::class,
@@ -21,5 +23,7 @@ class DatabaseSeeder extends Seeder
             EnrollmentSeeder::class,
             AttendanceSubmissionSeeder::class,
         ]);
+
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

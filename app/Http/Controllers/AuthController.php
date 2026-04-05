@@ -29,7 +29,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return Common::successResponse('Registration successful', [
+        return Common::successResponse('Đăng ký thành công', [
             'user'  => $user,
             'token' => $token,
         ], 201);
@@ -46,13 +46,13 @@ class AuthController extends Controller
 
         if (! $user || ! Hash::check($validated['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'email' => ['Email hoặc mật khẩu không chính xác.'],
             ]);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return Common::successResponse('Login successful', [
+        return Common::successResponse('Đăng nhập thành công', [
             'user'  => $user,
             'token' => $token,
         ]);
@@ -65,7 +65,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return Common::successResponse('Logged out successfully', []);
+        return Common::successResponse('Đăng xuất thành công', []);
     }
 
     /**
@@ -73,7 +73,7 @@ class AuthController extends Controller
      */
     public function me(Request $request): JsonResponse
     {
-        return Common::successResponse('User retrieved successfully', [
+        return Common::successResponse('Lấy thông tin người dùng thành công', [
             'user' => $request->user(),
         ]);
     }

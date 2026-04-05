@@ -26,4 +26,18 @@ class LoginRequest extends FormRequest
             'password' => ['required', 'string'],
         ];
     }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'email.required'    => 'Email là bắt buộc.',
+            'email.email'       => 'Email không hợp lệ.',
+            'password.required' => 'Mật khẩu là bắt buộc.',
+        ];
+    }
 }
