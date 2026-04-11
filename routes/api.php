@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\TeacherController;
+use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Http\Request;
@@ -22,11 +23,17 @@ Route::prefix('admin')->group(function () {
         Route::get('/dashboard/student-status',   [DashboardController::class, 'getStudentStatus']);
         Route::get('/dashboard/pending-actions',   [DashboardController::class, 'getPendingActions']);
 
+        Route::get('/courses-stats',  [CourseController::class, 'stats']);
+        Route::apiResource('courses', CourseController::class)->parameters([
+            'courses' => 'course',
+        ]);
+
+        Route::get('/teachers/export', [TeacherController::class, 'export']);
+        Route::get('/teachers/{teacher}/classes', [TeacherController::class, 'getClasses']);
+        Route::delete('/teachers', [TeacherController::class, 'destroyMany']);
         Route::apiResource('teachers', TeacherController::class)->parameters([
             'teachers' => 'teacher',
         ]);
-        Route::delete('/teachers', [TeacherController::class, 'destroyMany']);
-        Route::get('/teachers/{teacher}/classes', [TeacherController::class, 'getClasses']);
     });
 });
 

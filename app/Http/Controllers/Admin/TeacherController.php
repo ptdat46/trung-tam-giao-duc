@@ -12,13 +12,15 @@ use App\Repositories\TeacherRepository;
 use App\Services\TeacherService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class TeacherController extends Controller
 {
     public function __construct(
-        private TeacherService $teacherService
+        private TeacherService $teacherService,
+        private TeacherRepository $teacherRepository
     ) {}
 
     public function getClasses(int $id): JsonResponse
@@ -31,6 +33,33 @@ class TeacherController extends Controller
             'teacher' => new TeacherResource($teacher),
             'classes' => $classes,
         ]);
+    }
+
+    public function export(): StreamedResponse
+    {
+        $teachers = $this->teacherRepository->getAllTeachers()->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="teachers_' . date('Y-m-d') . '.csv"',
+        ];
+
+        return response()->stream(function () use ($teachers) {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fputcsv($handle, ['ID', 'Họ tên', 'Email', 'Số điện thoại', 'Trạng thái', 'Ngày tạo']);
+            foreach ($teachers as $teacher) {
+                fputcsv($handle, [
+                    $teacher->id,
+                    $teacher->name,
+                    $teacher->email,
+                    $teacher->phone ?? '',
+                    $teacher->status === 1 ? 'Hoạt động' : 'Không hoạt động',
+                    $teacher->created_at->format('Y-m-d H:i:s'),
+                ]);
+            }
+            fclose($handle);
+        }, 200, $headers);
     }
     public function index(Request $request): JsonResponse
     {

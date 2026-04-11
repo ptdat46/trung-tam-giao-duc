@@ -16,6 +16,7 @@ class Course extends Model
         'description',
         'price',
         'thumbnail',
+        'status',
     ];
 
     public function classes(): HasMany

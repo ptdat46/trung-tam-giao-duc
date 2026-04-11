@@ -20,6 +20,7 @@ class ClassModel extends Model
         'type',
         'room_number',
         'meeting_link',
+        'max_students',
         'start_date',
         'end_date',
         'status',

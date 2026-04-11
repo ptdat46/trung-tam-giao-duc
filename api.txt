@@ -868,9 +868,296 @@
   - status: 0 = Sắp mở, 1 = Đang học, 2 = Đã kết thúc, 3 = Đã hủy
   - total_students: chỉ đếm enrollment có status = 1 (đã ghi danh)
 
+  ─────────────────────────────────────────────────────────────
+  [GET] /api/admin/teachers/export
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Xuất danh sách tất cả giáo viên ra file CSV
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200 (File CSV download):
+  Content-Type: text/csv; charset=UTF-8
+  Content-Disposition: attachment; filename="teachers_2026-04-10.csv"
+
+  CSV columns: ID, Họ tên, Email, Số điện thoại, Trạng thái, Ngày tạo
+
+  VD file CSV:
+  ID,Họ tên,Email,Số điện thoại,Trạng thái,Ngày tạo
+  2,Nguyễn Văn A,teacher@example.com,0901234567,Hoạt động,2026-04-02 10:00:00
+  3,Giáo viên B,teacher_b@example.com,0902222222,Không hoạt động,2026-04-03 11:30:00
+
+  Ghi chú:
+  - File có BOM UTF-8 để Excel hiển thị tiếng Việt đúng
+  - Trạng thái: 1 → "Hoạt động", 0 → "Không hoạt động"
+  - Sắp xếp theo ID giảm dần (mới nhất trước)
+
+  Response 401 (Chưa đăng nhập):
+  {
+    "message": "Chưa đăng nhập.",
+    "status": 401
+  }
+
+  Response 403 (Sai role):
+  {
+    "message": "Unauthorized. You do not have permission to access this resource.",
+    "status": 403
+  }
+
 
 ================================================================================
-  11. LƯU Ý CHO FE DEV
+  11. ADMIN — QUẢN LÝ KHÓA HỌC
+================================================================================
+
+  BASE: /api/admin/courses
+  AUTH: Cần — Bearer Token + role = admin
+
+  ─────────────────────────────────────────────────────────────
+  [GET] /api/admin/courses-stats
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Lấy số liệu thống kê tổng quan cho trang khóa học
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "message": "Lấy thống kê khóa học thành công",
+    "data": {
+      "total_courses":          12,      // Tổng số khóa học
+      "active_classes_count":  8,        // Số khóa học có lớp đang active (status=1)
+      "upcoming_courses_count": 3,        // Số khóa học chờ khai giảng (status=0)
+      "enrollment_rate":       78       // Tỷ lệ lấp đầy (%)
+    },
+    "status": 200
+  }
+
+  Ghi chú:
+  - enrollment_rate = (tổng enrollment thực tế / tổng max_students) * 100
+  - Chỉ tính các lớp thuộc khóa học có status = 1 (Đang giảng dạy)
+
+  ─────────────────────────────────────────────────────────────
+  [GET] /api/admin/courses
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Danh sách tất cả khóa học (phân trang, hỗ trợ lọc)
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Query params:
+  ?page=1              // Trang hiện tại (default: 1)
+  ?per_page=10         // Số bản ghi mỗi trang (default: 10)
+  ?search=ielts        // Tìm kiếm theo slug hoặc description (LIKE %search%)
+  ?min_price=1000000   // Lọc giá tối thiểu
+  ?max_price=5000000   // Lọc giá tối đa
+  ?status=1             // Lọc theo trạng thái: 0=Chờ khai giảng, 1=Đang giảng dạy, 2=Đã hủy
+
+  Response 200:
+  {
+    "message": "Lấy danh sách khóa học thành công",
+    "data": {
+      "data": [
+        {
+          "id":           1,
+          "name":         "IELTS Intensive",
+          "slug":         "ielts-intensive",
+          "description":  "Khóa học IELTS chuyên sâu...",
+          "price":        5000000,
+          "thumbnail":    "https://...",
+          "status":       1,
+          "status_label": "Đang giảng dạy",
+          "classes_count": 3,
+          "created_at":   "2026-04-02T..."
+        },
+        { ... }
+      ],
+      "meta": {
+        "current_page": 1,
+        "total":        12,
+        "per_page":     10,
+        "last_page":    2
+      }
+    },
+    "status": 200
+  }
+
+  Ghi chú:
+  - FE dựa vào status để render badge màu: 0=Xám (Chờ khai giảng), 1=Xanh (Đang giảng dạy), 2=Tím (Đã hủy)
+  - classes_count: tổng số lớp thuộc khóa học (dùng withCount('classes'))
+
+  ─────────────────────────────────────────────────────────────
+  [GET] /api/admin/courses/{id}
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Lấy chi tiết một khóa học
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "message": "Lấy thông tin khóa học thành công",
+    "data": {
+      "course": {
+        "id":           1,
+        "name":         "IELTS Intensive",
+        "slug":         "ielts-intensive",
+        "description":  "Khóa học IELTS chuyên sâu...",
+        "price":        5000000,
+        "thumbnail":    "https://...",
+        "status":       1,
+        "status_label": "Đang giảng dạy",
+        "classes_count": 3,
+        "created_at":   "2026-04-02T...",
+        "updated_at":   "2026-04-02T..."
+      }
+    },
+    "status": 200
+  }
+
+  Response 404:
+  {
+    "message": "No query results for model [Course] 999.",
+    "status": 404
+  }
+
+  ─────────────────────────────────────────────────────────────
+  [POST] /api/admin/courses
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Tạo mới một khóa học
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Request Body (JSON):
+  {
+    "name":        "IELTS Intensive",        // required, string, max:255
+    "slug":        "ielts-intensive",        // required, string, max:255, unique
+    "description": "Khóa học IELTS chuyên sâu", // nullable, string
+    "price":       5000000,                 // nullable, integer, min:0
+    "thumbnail":   "https://..."            // nullable, string
+  }
+
+  Ghi chú:
+  - Khóa học mới luôn có status = 0 (Chờ khai giảng)
+
+  Response 201:
+  {
+    "message": "Tạo khóa học thành công",
+    "data": {
+      "course": {
+        "id":           5,
+        "name":         "IELTS Intensive",
+        "slug":         "ielts-intensive",
+        "description":  "Khóa học IELTS chuyên sâu",
+        "price":        5000000,
+        "thumbnail":    "https://...",
+        "status":       0,
+        "status_label": "Chờ khai giảng",
+        "classes_count": 0,
+        "created_at":   "2026-04-05T..."
+      }
+    },
+    "status": 201
+  }
+
+  Response 422 (Validation Error):
+  {
+    "message": "Dữ liệu không hợp lệ.",
+    "errors": {
+      "slug": ["Slug đã được sử dụng."]
+    },
+    "status": 422
+  }
+
+  ─────────────────────────────────────────────────────────────
+  [PUT] /api/admin/courses/{id}
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Cập nhật thông tin và trạng thái khóa học
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Request Body (JSON) — tất cả fields đều nullable:
+  {
+    "name":        "IELTS Pro",                // nullable, string, max:255
+    "slug":        "ielts-pro",                 // nullable, string, max:255, unique
+    "description": "Khóa học mới...",
+    "price":       6000000,                    // nullable, integer, min:0
+    "thumbnail":   "https://new-thumb.jpg",     // nullable, string
+    "status":      1                            // nullable, 0=Chờ khai giảng, 1=Đang giảng dạy, 2=Đã hủy
+  }
+
+  Response 200:
+  {
+    "message": "Cập nhật khóa học thành công",
+    "data": {
+      "course": {
+        "id":           5,
+        "name":         "IELTS Pro",
+        "slug":         "ielts-pro",
+        "description":  "Khóa học mới...",
+        "price":        6000000,
+        "thumbnail":    "https://new-thumb.jpg",
+        "status":       1,
+        "status_label": "Đang giảng dạy",
+        "classes_count": 0,
+        "created_at":   "2026-04-05T...",
+        "updated_at":   "2026-04-05T..."
+      }
+    },
+    "status": 200
+  }
+
+  Response 422 (Email trùng):
+  {
+    "message": "Dữ liệu không hợp lệ.",
+    "errors": {
+      "slug": ["Slug đã được sử dụng."],
+      "status": ["Trạng thái chỉ nhận giá trị 0 (Chờ khai giảng), 1 (Đang giảng dạy), 2 (Đã hủy)."]
+    },
+    "status": 422
+  }
+
+  ─────────────────────────────────────────────────────────────
+  [DELETE] /api/admin/courses/{id}
+  ─────────────────────────────────────────────────────────────
+  Mô tả    : Xóa một khóa học (xóa cascade các lớp liên quan)
+
+  Headers:
+  Authorization: Bearer <token>
+
+  Response 200:
+  {
+    "message": "Xóa khóa học thành công",
+    "data": [],
+    "status": 200
+  }
+
+  Response 404:
+  {
+    "message": "No query results for model [Course] 999.",
+    "status": 404
+  }
+
+  ─────────────────────────────────────────────────────────────
+  ERROR RESPONSES (chung cho tất cả /courses/*)
+  ─────────────────────────────────────────────────────────────
+
+  Response 401 (Chưa đăng nhập):
+  {
+    "message": "Chưa đăng nhập.",
+    "status": 401
+  }
+
+  Response 403 (Sai role):
+  {
+    "message": "Unauthorized. You do not have permission to access this resource.",
+    "status": 403
+  }
+
+
+================================================================================
+  12. LƯU Ý CHO FE DEV
 ================================================================================
 
   - Tất cả API trả về Content-Type: application/json
