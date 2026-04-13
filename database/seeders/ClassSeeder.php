@@ -53,7 +53,6 @@ class ClassSeeder extends Seeder
                     ],
                     [
                         'type' => $type,
-                        'room_number' => $type === 1 ? 'Phòng ' . rand(1, 20) : null,
                         'meeting_link' => $type === 0 ? 'https://meet.google.com/' . fake()->uuid : null,
                         'start_date' => $startDate->toDateString(),
                         'end_date' => $endDate->toDateString(),

@@ -18,9 +18,7 @@ class ClassModel extends Model
         'teacher_id',
         'name',
         'type',
-        'room_number',
         'meeting_link',
-        'max_students',
         'start_date',
         'end_date',
         'status',
@@ -42,9 +40,9 @@ class ClassModel extends Model
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
-    public function sessions(): HasMany
+    public function courseSessions(): HasMany
     {
-        return $this->hasMany(Session::class, 'class_id');
+        return $this->hasMany(CourseSession::class, 'class_id');
     }
 
     public function lessons(): HasMany

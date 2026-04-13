@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Assignment;
 use App\Models\ClassModel;
 use App\Models\Lesson;
-use App\Models\Session;
+use App\Models\CourseSession;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -21,14 +21,18 @@ class ContentSeeder extends Seeder
 
             // ~20 sessions per class
             for ($i = 1; $i <= 20; $i++) {
-                Session::firstOrCreate(
+                CourseSession::updateOrCreate(
                     [
                         'class_id' => $class->id,
                         'title' => "Buổi $i - " . fake()->sentence(3),
                     ],
                     [
+                        'teacher_id' => $class->teacher_id,
                         'session_date' => $startDate->copy()->addWeeks($i - 1)->toDateString(),
+                        'start_time' => sprintf('%02d:00:00', rand(7, 18)),
+                        'duration' => rand(2, 4) * 45, // 90, 135, 180 minutes
                         'type' => $class->type,
+                        'status' => 0, // Scheduled
                     ]
                 );
             }

@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             ContentSeeder::class,
             EnrollmentSeeder::class,
             AttendanceSubmissionSeeder::class,
+            RoomSeeder::class,
+            ScheduleRequestSeeder::class,
         ]);
 
         \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=1;');

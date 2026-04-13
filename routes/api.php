@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\SchedulingController;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Teacher\ScheduleRequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +36,16 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('teachers', TeacherController::class)->parameters([
             'teachers' => 'teacher',
         ]);
+
+        // Scheduling APIs
+        Route::prefix('scheduling')->group(function () {
+            Route::get   ('calendar',             [SchedulingController::class, 'calendar']);
+            Route::get   ('rooms',                [SchedulingController::class, 'rooms']);
+            Route::get   ('stats',                [SchedulingController::class, 'stats']);
+            Route::post  ('assign',               [SchedulingController::class, 'assign']);
+            Route::get   ('requests',             [SchedulingController::class, 'listRequests']);
+            Route::patch ('approve-request/{id}',  [SchedulingController::class, 'approveRequest']);
+        });
     });
 });
 
@@ -45,6 +57,10 @@ Route::prefix('teacher')->group(function () {
     Route::middleware(['auth:sanctum', 'role:teacher'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('teacher.logout');
         Route::get ('/me',     [AuthController::class, 'me'])->name('teacher.me');
+
+        // Schedule requests
+        Route::get ('/schedule-requests', [ScheduleRequestController::class, 'index']);
+        Route::post('/schedule-requests', [ScheduleRequestController::class, 'store']);
     });
 });
 

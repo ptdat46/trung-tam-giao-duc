@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Assignment;
 use App\Models\Attendance;
 use App\Models\ClassModel;
-use App\Models\Session;
+use App\Models\CourseSession;
 use App\Models\StudentProgress;
 use App\Models\Submission;
 use App\Models\User;
@@ -15,14 +15,14 @@ class AttendanceSubmissionSeeder extends Seeder
 {
     public function run(): void
     {
-        $classes = ClassModel::with('sessions')->get();
+        $classes = ClassModel::with('courseSessions')->get();
 
         // 200 attendances
         $attendanceCreated = 0;
         foreach ($classes as $class) {
             if ($attendanceCreated >= 200) break;
 
-            $sessions = $class->sessions;
+            $sessions = $class->courseSessions;
             $enrolledStudents = $class->enrollments()->where('status', 1)->with('user')->get();
 
             foreach ($sessions as $session) {

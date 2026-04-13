@@ -12,7 +12,7 @@ class EnrollmentSeeder extends Seeder
 {
     public function run(): void
     {
-        $students = User::where('role', 2)->get();
+        $students = User::where('role', 'student')->get();
         $classes = ClassModel::all();
 
         foreach ($classes as $class) {
